@@ -4,8 +4,11 @@ const fs = require("fs");
 const path = require("path");
 
 const server = http.createServer((req, res) => {
-  let filePath = "." + req.url;
-  if (filePath === "./") filePath = "./display.html";
+  let filePath = path.join(__dirname, req.url);
+
+  if (req.url === "/") {
+    filePath = path.join(__dirname, "display.html");
+  }
 
   const ext = path.extname(filePath);
   const map = {
