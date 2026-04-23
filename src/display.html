@@ -36,8 +36,8 @@ function show(src){
   const img = document.createElement("img");
   img.src = src;
 
-  const baseSize = 120;
-  const scale = 0.5 + Math.random(); // 0.5〜1.5倍
+  const baseSize = 240;
+  const scale = 1 + Math.random(); // 0.5〜1.5倍
   const size = baseSize * scale;
 
   const x = Math.random() * (window.innerWidth - size);
