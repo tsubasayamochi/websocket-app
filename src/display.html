@@ -6,7 +6,7 @@ const ws = new WebSocket(
 );
 
 ws.onmessage = (e) => {
-  console.log("受信:", e.data); // ★追加
+  console.log("受信:", e.data);
   show(e.data);
 };
 
@@ -14,14 +14,13 @@ function show(src){
   const img = document.createElement("img");
   img.src = src;
 
-  const x = Math.random()*window.innerWidth;
-  const y = Math.random()*window.innerHeight;
-
   img.style.position = "absolute";
-img.style.left = "100px";
-img.style.top = "100px";
-img.style.width = "150px";
-  
+  img.style.left = "100px";
+  img.style.top = "100px";
+  img.style.width = "200px"; // ★重要
+
   document.body.appendChild(img);
 }
 </script>
+
+<body style="background:white;"></body>
