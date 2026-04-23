@@ -15,19 +15,23 @@ const ws = new WebSocket(
 );
 
 ws.onmessage = (e) => {
-  console.log("受信:", e.data);
-
   const img = document.createElement("img");
   img.src = e.data;
 
-  // ★ 強制表示設定
-  img.style.display = "block";
-  img.style.width = "200px";
-  img.style.border = "2px solid red";
+  const size = 120;
 
-  document.getElementById("area").appendChild(img);
+  const x = Math.random() * (window.innerWidth - size);
+  const y = Math.random() * (window.innerHeight - size);
+
+  img.style.position = "absolute";
+  img.style.left = x + "px";
+  img.style.top = y + "px";
+  img.style.width = size + "px";
+
+  document.body.appendChild(img);
 };
 </script>
 
-</body>
+<body style="background:white;"></body>
+
 </html>
