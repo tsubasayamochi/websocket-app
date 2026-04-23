@@ -1,12 +1,3 @@
-<head>
-<meta charset="UTF-8">
-<title>Display</title>
-</head>
-
-<body style="background:white;">
-
-<div id="area"></div>
-
 <script>
 const ws = new WebSocket(
   (location.protocol === "https:" ? "wss://" : "ws://") + location.host
@@ -25,6 +16,7 @@ ws.onmessage = (e) => {
   img.style.left = x + "px";
   img.style.top = y + "px";
   img.style.width = size + "px";
+  img.style.zIndex = Date.now();
 
   document.body.appendChild(img);
 };
