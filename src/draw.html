@@ -35,6 +35,7 @@ canvas {
 <body>
 
 <div id="toolbar">
+  <input type="color" id="colorPicker" value="#000000">
   <button onclick="setPen()">ペン</button>
   <button onclick="setEraser()">消しゴム</button>
   <button onclick="clearCanvas()">リセット</button>
@@ -91,14 +92,36 @@ window.addEventListener("pointerup", () => {
   drawing = false;
 });
 
-// ■ モード切替
+const colorPicker = document.getElementById("colorPicker");
+
+let mode = "pen";
+
+// ペン
 function setPen() {
   mode = "pen";
+  ctx.lineWidth = 5;
 }
 
+// 消しゴム（太くする）
 function setEraser() {
   mode = "eraser";
+  ctx.lineWidth = 20; // ★ここで大きく
 }
+
+// 描画処理
+c.addEventListener("pointermove", (e) => {
+  if (!drawing) return;
+
+  if (mode === "pen") {
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = colorPicker.value; // ★色反映
+  } else {
+    ctx.globalCompositeOperation = "destination-out";
+  }
+
+  ctx.lineTo(e.clientX, e.clientY - 60);
+  ctx.stroke();
+});
 
 // ■ リセット
 function clearCanvas() {
