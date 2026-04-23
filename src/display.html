@@ -3,11 +3,16 @@ const ws = new WebSocket(
   (location.protocol === "https:" ? "wss://" : "ws://") + location.host
 );
 
-ws.onmessage = (e) => {
+function show(src){
   const img = document.createElement("img");
-  img.src = e.data;
+  img.src = src;
 
-  const size = 120;
+  const baseSize = 120;
+
+  // ★ 0.5〜1.5倍
+  const scale = 0.5 + Math.random(); 
+
+  const size = baseSize * scale;
 
   const x = Math.random() * (window.innerWidth - size);
   const y = Math.random() * (window.innerHeight - size);
@@ -16,7 +21,6 @@ ws.onmessage = (e) => {
   img.style.left = x + "px";
   img.style.top = y + "px";
   img.style.width = size + "px";
-  img.style.zIndex = Date.now();
 
   document.body.appendChild(img);
 };
