@@ -1,4 +1,13 @@
-<body style="margin:0;background:#111;"></body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Display</title>
+</head>
+
+<body style="background:white;">
+
+<div id="area"></div>
 
 <script>
 const ws = new WebSocket(
@@ -7,20 +16,18 @@ const ws = new WebSocket(
 
 ws.onmessage = (e) => {
   console.log("受信:", e.data);
-  show(e.data);
-};
 
-function show(src){
   const img = document.createElement("img");
-  img.src = src;
+  img.src = e.data;
 
-  img.style.position = "absolute";
-  img.style.left = "100px";
-  img.style.top = "100px";
-  img.style.width = "200px"; // ★重要
+  // ★ 強制表示設定
+  img.style.display = "block";
+  img.style.width = "200px";
+  img.style.border = "2px solid red";
 
-  document.body.appendChild(img);
-}
+  document.getElementById("area").appendChild(img);
+};
 </script>
 
-<body style="background:white;"></body>
+</body>
+</html>
