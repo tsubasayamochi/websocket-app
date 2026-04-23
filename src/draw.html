@@ -8,8 +8,8 @@
 <style>
 body {
   margin: 0;
-  overflow: hidden; /* スクロール禁止 */
-  touch-action: none; /* ★これが超重要（スマホのスクロール防止） */
+  overflow: hidden;
+  touch-action: none;
   background: #f0f0f0;
 }
 
@@ -17,16 +17,24 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  background: #fff;
+  background: #ffffff;
   padding: 10px;
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   z-index: 10;
+}
+
+.color-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
 }
 
 canvas {
   position: absolute;
-  top: 60px;
+  top: 70px;
   left: 0;
 }
 </style>
@@ -35,7 +43,15 @@ canvas {
 <body>
 
 <div id="toolbar">
-  <input type="color" id="colorPicker" value="#000000">
+  <!-- カラーパレット -->
+  <button class="color-btn" style="background:#000000" onclick="setColor('#000000')"></button>
+  <button class="color-btn" style="background:#ff0000" onclick="setColor('#ff0000')"></button>
+  <button class="color-btn" style="background:#0000ff" onclick="setColor('#0000ff')"></button>
+  <button class="color-btn" style="background:#00aa00" onclick="setColor('#00aa00')"></button>
+  <button class="color-btn" style="background:#ffff00" onclick="setColor('#ffff00')"></button>
+  <button class="color-btn" style="background:#ff00ff" onclick="setColor('#ff00ff')"></button>
+
+  <!-- 機能ボタン -->
   <button onclick="setPen()">ペン</button>
   <button onclick="setEraser()">消しゴム</button>
   <button onclick="clearCanvas()">リセット</button>
@@ -52,10 +68,10 @@ const ws = new WebSocket(
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
 
-// ■ キャンバスを画面いっぱいに
+// ■ キャンバスサイズ
 function resizeCanvas() {
   c.width = window.innerWidth;
-  c.height = window.innerHeight - 60;
+  c.height = window.innerHeight - 70;
 }
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
@@ -63,16 +79,35 @@ window.addEventListener("resize", resizeCanvas);
 // ■ 初期設定
 ctx.lineWidth = 5;
 ctx.lineCap = "round";
-ctx.strokeStyle = "black";
+ctx.strokeStyle = "#000000";
 
 let drawing = false;
 let mode = "pen";
+
+// ■ 色変更
+function setColor(color){
+  mode = "pen";
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 5;
+}
+
+// ■ ペン
+function setPen(){
+  mode = "pen";
+  ctx.lineWidth = 5;
+}
+
+// ■ 消しゴム（太め）
+function setEraser(){
+  mode = "eraser";
+  ctx.lineWidth = 25;
+}
 
 // ■ 描画
 c.addEventListener("pointerdown", (e) => {
   drawing = true;
   ctx.beginPath();
-  ctx.moveTo(e.clientX, e.clientY - 60);
+  ctx.moveTo(e.clientX, e.clientY - 70);
 });
 
 c.addEventListener("pointermove", (e) => {
@@ -81,10 +116,10 @@ c.addEventListener("pointermove", (e) => {
   if (mode === "pen") {
     ctx.globalCompositeOperation = "source-over";
   } else {
-    ctx.globalCompositeOperation = "destination-out"; // 消しゴム
+    ctx.globalCompositeOperation = "destination-out";
   }
 
-  ctx.lineTo(e.clientX, e.clientY - 60);
+  ctx.lineTo(e.clientX, e.clientY - 70);
   ctx.stroke();
 });
 
@@ -92,39 +127,8 @@ window.addEventListener("pointerup", () => {
   drawing = false;
 });
 
-const colorPicker = document.getElementById("colorPicker");
-
-let mode = "pen";
-
-// ペン
-function setPen() {
-  mode = "pen";
-  ctx.lineWidth = 5;
-}
-
-// 消しゴム（太くする）
-function setEraser() {
-  mode = "eraser";
-  ctx.lineWidth = 20; // ★ここで大きく
-}
-
-// 描画処理
-c.addEventListener("pointermove", (e) => {
-  if (!drawing) return;
-
-  if (mode === "pen") {
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = colorPicker.value; // ★色反映
-  } else {
-    ctx.globalCompositeOperation = "destination-out";
-  }
-
-  ctx.lineTo(e.clientX, e.clientY - 60);
-  ctx.stroke();
-});
-
 // ■ リセット
-function clearCanvas() {
+function clearCanvas(){
   ctx.clearRect(0, 0, c.width, c.height);
 }
 
