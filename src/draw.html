@@ -2,10 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<title>Draw</title>
 </head>
+
 <body>
 
-<canvas id="c" width="300" height="300" style="border:1px solid #000;"></canvas>
+<canvas id="c" width="300" height="300"
+style="border:1px solid #000; background:white;"></canvas>
+<br>
 <button onclick="send()">送信</button>
 
 <script>
@@ -14,8 +18,10 @@ const ws = new WebSocket(location.origin.replace("http", "ws"));
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
 
+// ★ 見えない問題対策
 ctx.lineWidth = 3;
 ctx.lineCap = "round";
+ctx.strokeStyle = "black";
 
 let drawing = false;
 
@@ -31,13 +37,15 @@ c.addEventListener("pointermove", (e) => {
   ctx.stroke();
 });
 
-// ★ 重要：canvas外でも検知
+// ★ 重要：外でも終了
 window.addEventListener("pointerup", () => {
   drawing = false;
 });
 
+// ★ 送信
 function send(){
-  ws.send(c.toDataURL());
+  const data = c.toDataURL("image/png");
+  ws.send(data);
 }
 </script>
 
