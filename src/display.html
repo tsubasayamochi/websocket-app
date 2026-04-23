@@ -1,17 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Display</title>
+</head>
+
+<body style="background:white;">
+
 <script>
 const ws = new WebSocket(
   (location.protocol === "https:" ? "wss://" : "ws://") + location.host
 );
 
+// ★ 接続確認
+ws.onopen = () => {
+  console.log("Display: WebSocket接続OK");
+};
+
+ws.onerror = (e) => {
+  console.error("Display: WebSocketエラー", e);
+};
+
+ws.onclose = () => {
+  console.log("Display: 接続切断");
+};
+
+// ★ 受信確認
+ws.onmessage = (e) => {
+  console.log("受信:", e.data);
+  show(e.data);
+};
+
+// ★ 表示
 function show(src){
   const img = document.createElement("img");
   img.src = src;
 
   const baseSize = 120;
-
-  // ★ 0.5〜1.5倍
-  const scale = 0.5 + Math.random(); 
-
+  const scale = 0.5 + Math.random(); // 0.5〜1.5倍
   const size = baseSize * scale;
 
   const x = Math.random() * (window.innerWidth - size);
@@ -23,7 +49,8 @@ function show(src){
   img.style.width = size + "px";
 
   document.body.appendChild(img);
-};
+}
 </script>
 
-<body style="background:white;"></body>
+</body>
+</html>
