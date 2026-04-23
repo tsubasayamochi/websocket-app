@@ -65,6 +65,16 @@ const ws = new WebSocket(
   (location.protocol === "https:" ? "wss://" : "ws://") + location.host
 );
 
+// ★ 接続状態ログ
+ws.onopen = () => {
+  console.log("WebSocket接続OK");
+  document.getElementById("sendBtn").disabled = false;
+};
+
+ws.onerror = (e) => {
+  console.error("WebSocketエラー", e);
+};
+
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
 
@@ -134,7 +144,14 @@ function clearCanvas(){
 
 // ■ 送信
 function send(){
+  if (ws.readyState !== WebSocket.OPEN) {
+    console.log("まだ接続されていません");
+    return;
+  }
+
   const data = c.toDataURL("image/png");
+  console.log("送信:", data);
+
   ws.send(data);
 }
 </script>
