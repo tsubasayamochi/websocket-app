@@ -1,5 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta charset="UTF-8">
-<canvas id="c" width="300" height="300"></canvas>
+</head>
+<body>
+
+<canvas id="c" width="300" height="300" style="border:1px solid #000;"></canvas>
 <button onclick="send()">送信</button>
 
 <script>
@@ -8,22 +14,32 @@ const ws = new WebSocket(location.origin.replace("http", "ws"));
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
 
-let d = false;
+ctx.lineWidth = 3;
+ctx.lineCap = "round";
 
-c.onpointerdown = (e) => {
+let drawing = false;
+
+c.addEventListener("pointerdown", (e) => {
   drawing = true;
   ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
+});
 
-c.onpointerup = () => drawing = false;
-
-c.onpointermove = (e) => {
+c.addEventListener("pointermove", (e) => {
   if (!drawing) return;
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
-};
+});
+
+// ★ 重要：canvas外でも検知
+window.addEventListener("pointerup", () => {
+  drawing = false;
+});
 
 function send(){
   ws.send(c.toDataURL());
 }
 </script>
+
+</body>
+</html>
