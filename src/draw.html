@@ -10,11 +10,15 @@ const ctx = c.getContext("2d");
 
 let d = false;
 
-c.onpointerdown = () => d = true;
-c.onpointerup = () => d = false;
+c.onpointerdown = (e) => {
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
 
-c.onpointermove = e => {
-  if (!d) return;
+c.onpointerup = () => drawing = false;
+
+c.onpointermove = (e) => {
+  if (!drawing) return;
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
 };
