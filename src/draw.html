@@ -49,6 +49,13 @@ function send(){
   const data = c.toDataURL("image/png");
   ws.send(data);
 }
+
+function send(){
+  const data = c.toDataURL("image/png");
+  console.log("送信:", data); // ★追加
+  ws.send(data);
+}
+
 </script>
 
 </body>
