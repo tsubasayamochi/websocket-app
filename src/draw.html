@@ -37,6 +37,10 @@ canvas {
   top: 70px;
   left: 0;
 }
+
+#sendBtn:disabled {
+  opacity: 0.5;
+}
 </style>
 </head>
 
@@ -100,6 +104,7 @@ ctx.strokeStyle = "#000000";
 
 let drawing = false;
 let mode = "pen";
+let isSending = false;
 
 // ■ 色変更
 function setColor(color){
@@ -149,17 +154,53 @@ function clearCanvas(){
   ctx.clearRect(0, 0, c.width, c.height);
 }
 
+// ■ 空判定
+function isCanvasEmpty() {
+  const blank = document.createElement("canvas");
+  blank.width = c.width;
+  blank.height = c.height;
+  return c.toDataURL() === blank.toDataURL();
+}
+
 // ■ 送信
 function send(){
+  const btn = document.getElementById("sendBtn");
+
   if (ws.readyState !== WebSocket.OPEN) {
-    console.log("まだ接続されていません");
+    console.log("未接続");
     return;
   }
+
+  // ■ 空チェック
+  if (isCanvasEmpty()) {
+    btn.innerText = "何も描いていません";
+    setTimeout(() => {
+      btn.innerText = "送信";
+    }, 1000);
+    return;
+  }
+
+  // ■ 連打防止
+  if (isSending) return;
+  isSending = true;
+  btn.disabled = true;
 
   const data = c.toDataURL("image/png");
   console.log("送信:", data);
 
   ws.send(data);
+
+  // ■ 送信後リセット
+  clearCanvas();
+
+  // ■ フィードバック
+  btn.innerText = "送信完了！";
+
+  setTimeout(() => {
+    btn.innerText = "送信";
+    btn.disabled = false;
+    isSending = false;
+  }, 1000);
 }
 </script>
 
