@@ -58,12 +58,47 @@ function show(src){
 
   document.body.appendChild(img);
 
-  // ■ フェードイン＋少し拡大
+  // ■ 既存画像と重なりチェック
+  const newRect = {
+    left: x,
+    top: y,
+    right: x + size,
+    bottom: y + size
+  };
+
+  const images = document.querySelectorAll("img");
+
+  images.forEach(oldImg => {
+    if (oldImg === img) return;
+
+    const rect = oldImg.getBoundingClientRect();
+
+    const overlap =
+      newRect.left < rect.right &&
+      newRect.right > rect.left &&
+      newRect.top < rect.bottom &&
+      newRect.bottom > rect.top;
+
+    if (overlap) {
+      fadeOut(oldImg);
+    }
+  });
+
+  // ■ フェードイン
   setTimeout(() => {
-    img.style.transition = "all 0.8s ease-out";
+    img.style.transition = "all 0.4s ease-out";
     img.style.opacity = 1;
     img.style.transform = `rotate(${angle}deg) scale(1)`;
   }, 10);
+}
+// ★ フェードアウト
+function fadeOut(el){
+  el.style.transition = "opacity 0.6s";
+  el.style.opacity = 0;
+
+  setTimeout(() => {
+    el.remove();
+  }, 600);
 }
 </script>
 
