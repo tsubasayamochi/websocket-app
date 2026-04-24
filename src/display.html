@@ -36,19 +36,34 @@ function show(src){
   const img = document.createElement("img");
   img.src = src;
 
-  const baseSize = 240;
-  const scale = 1 + Math.random() * 0.5; // 0.5〜1.5倍
+  const baseSize = 120;
+  const scale = 0.5 + Math.random();
   const size = baseSize * scale;
 
   const x = Math.random() * (window.innerWidth - size);
   const y = Math.random() * (window.innerHeight - size);
 
-  img.style.position = "absolute";
+  // ■ 回転（-45〜45度）
+  const angle = Math.random() * 90 - 45;
+
+  img.style.position = "fixed";
   img.style.left = x + "px";
   img.style.top = y + "px";
   img.style.width = size + "px";
+  img.style.zIndex = 9999;
+
+  // ■ 初期状態（透明＋回転＋少し小さく）
+  img.style.opacity = 0;
+  img.style.transform = `rotate(${angle}deg) scale(0.8)`;
 
   document.body.appendChild(img);
+
+  // ■ フェードイン＋少し拡大
+  setTimeout(() => {
+    img.style.transition = "all 0.4s ease-out";
+    img.style.opacity = 1;
+    img.style.transform = `rotate(${angle}deg) scale(1)`;
+  }, 10);
 }
 </script>
 
